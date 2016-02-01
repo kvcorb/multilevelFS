@@ -13,7 +13,7 @@ grpunt=12*5
 
 righe.cont <- 1:2
 f1 <- 2.5
-f2 <- 3
+f2 <- 2
 
 coffebra.cont$logV[righe.cont]=f1*coffebra$logV[righe.cont]
 coffebra.cont$logQ[righe.cont]=f2*coffebra$logQ[righe.cont]
@@ -135,7 +135,7 @@ uhat.fwd = matrix(NA, nrow=ngroups, ncol = length(y)-length(bsb)+ 1)
 ############################  START OF THE FS
 
 # new: seq code and for code
-fscycle=seq(70,300,5)
+fscycle=seq(70,nn,5)
 
 
 
@@ -251,15 +251,18 @@ for(m in fscycle) {
 
 steps=1:step
 
-plot(length(bsb):length(y), (res.fwd[1,])^2, type = "n", ylim = range(res.fwd^2, na.rm = T), xlab = "Subset size m", ylab = "Squred Residuals")
+plot(length(bsb):length(y), (res.fwd[1,])^2, type = "n", ylim = range(res.fwd^2, na.rm = T), xlab = "Subset size m", ylab = "Squared Residuals")
 for (i in 1:nrow(res.fwd)) 
   lines(fscycle, (res.fwd[i, steps])^2, lty = i, col = i)
+
+dev.print(device = postscript, file = "C:/ASIM/multilevelFS/figures/squared.resid.sim.eps", height = 18, width = 30, onefile = T)
 
 
 plot(length(bsb):length(y), beta.fwd[1,], type = "n", ylim = range(beta.fwd, na.rm = T), xlab = "Subset size m", ylab = "Estimates of fixed effects")
 for (i in 1:nrow(beta.fwd)) 
   lines(fscycle, beta.fwd[i, steps], lty = i, col = i)
 
+dev.print(device = postscript, file = "C:/ASIM/multilevelFS/figures/bhat.sim.eps", height = 18, width = 30, onefile = T)
 
 
 
@@ -268,11 +271,15 @@ for (i in 1:nrow(beta.fwd))
   lines(fscycle, ttest.fwd[i, steps], lty = i, col = i)
 abline(h = c(-2,2), lwd = 3, lty = 2, col = "blue")
 
+dev.print(device = postscript, file = "C:/ASIM/multilevelFS/figures/ttest.bhat.sim.eps", height = 18, width = 30, onefile = T)
+
 
 plot(length(bsb):length(y), uhat.fwd[1,], type = "n", ylim = range(uhat.fwd, na.rm = T), xlab = "Subset size m", ylab = "Predicted random effects")
 for (i in 1:nrow(uhat.fwd)) 
   lines(fscycle, uhat.fwd[i, steps], lty = i, col = i)
 abline(h = 0, lwd = 5, lty = 2, col = "blue")
+
+dev.print(device = postscript, file = "C:/ASIM/multilevelFS/figures/predicted.reff.sim.eps", height = 18, width = 30, onefile = T)
 
 
 ########################## 
