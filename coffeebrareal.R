@@ -125,7 +125,7 @@ uhat.fwd = matrix(NA, nrow=ngroups, ncol = length(y)-length(bsb)+ 1)
 ############################  START OF THE FS
 
 # new: seq code and for code
-fscycle=seq(length(bsb),nn,18)
+fscycle=seq(length(bsb),nn,ngroups)
 
 
 
