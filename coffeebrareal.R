@@ -122,7 +122,7 @@ row.inside.fwd = matrix(NA, nrow = length(y),ncol = length(y)-length(bsb)+ 1)
 uhat.fwd = matrix(NA, nrow=ngroups, ncol = length(y)-length(bsb)+ 1)
 
 
-############################  START OF THE FS
+############################  START OF THE FS  ##########################
 
 # new: seq code and for code
 fscycle=seq(length(bsb),nn,ngroups)
