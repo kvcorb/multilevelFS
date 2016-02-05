@@ -3,7 +3,7 @@ library(Matrix)
 library(MASS)
 library(ggplot2)
 
-
+# start
 coffebra = read.table("simBRAx1.txt", header = T)
 coffebra.cont <- coffebra
 # new: nn & grpunt
