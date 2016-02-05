@@ -12,8 +12,8 @@ grpunt=12*5
 tabcountry=rbind(c("F", "G", "I", "S", "UK"), c(0,0,0,0,0), c(0,0,0,0,0) )
 
 righe.cont <- 1:2
-f1 <- 4
-#f2 <- 3
+f1 <- 0.65
+f2 <- 0.9
 
 coffebra.cont$logV[righe.cont]=f1*coffebra$logV[righe.cont]
 coffebra.cont$logQ[righe.cont]=f2*coffebra$logQ[righe.cont]
