@@ -12,7 +12,7 @@ grpunt=12*5
 tabcountry=rbind(c("F", "G", "I", "S", "UK"), c(0,0,0,0,0), c(0,0,0,0,0) )
 
 righe.cont <- 1:2
-f1 <- 0.65
+f1 <- 0.35
 f2 <- 0.9
 
 coffebra.cont$logV[righe.cont]=f1*coffebra$logV[righe.cont]
@@ -338,6 +338,12 @@ for (i in 1:nrow(uhat.fwd))
   lines(fscycle0, uhat.fwd[i, fscycle1], lty = i, col = i, lwd=2)
 abline(h = 0, lwd = 5, lty = 2, col = "blue")
 
+
+rrr=uhat.fwd %*% diag(1/as.vector(sqrt(sigma2U.fwd)))
+plot(length(bsb):length(y), uhat.fwd[1,]/sqrt(sigma2U.fwd[1]), type = "n", ylim = range(rrr, na.rm = T)*1.2, xlab = "Subset size m", ylab = "Predicted random effects")
+for (i in 1:nrow(uhat.fwd)) 
+  lines(fscycle0, uhat.fwd[i, fscycle1]/sqrt(sigma2U.fwd[i]), lty = i, col = i, lwd=2)
+abline(h = 0, lwd = 5, lty = 2, col = "blue")
 
 
 
