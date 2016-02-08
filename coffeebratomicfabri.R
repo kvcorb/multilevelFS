@@ -313,7 +313,7 @@ fscycle=seq(70,300,5)
         row.inside.fwd[1:length(nbsb), step] = nbsb
         uhat.fwd[, step] = as.vector(uhat.sub)
 
-        }  # innercycle
+        }  # innercycle 
     }
 }
 
