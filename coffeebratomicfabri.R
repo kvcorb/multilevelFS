@@ -282,6 +282,7 @@ for (i in 1:nrow(uhat.fwd))
 abline(h = 0, lwd = 5, lty = 2, col = "blue")
 
 
+
 rrr=uhat.fwd %*% diag(1/as.vector(sqrt(sigma2U.fwd)))
 plot(length(bsb):length(y), uhat.fwd[1,]/sqrt(sigma2U.fwd[1]), type = "n", ylim = range(rrr, na.rm = T)*1.5, xlab = "Subset size m", ylab = "Predicted random effects")
 for (i in 1:nrow(uhat.fwd)) 
