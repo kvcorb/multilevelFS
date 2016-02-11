@@ -135,7 +135,7 @@ uhat.fwd = matrix(NA, nrow=ngroups, ncol = length(y)-length(bsb)+ 1)
 ############################  START OF THE FS
 
 # new: seq code and for code
-fscycle=seq(70,300,1)
+fscycle=seq(70,300,5)
 
 # original:
  for(m in fscycle) {
@@ -186,7 +186,7 @@ fscycle=seq(70,300,1)
         
 ########## create a inner cycle for 1 < m < 5        
         
-       # for (incy in 1:5){
+        for (incy in 1:5){
           step = step+1
           
 ############################################################  ORDERING RESIDUALS        
@@ -194,20 +194,77 @@ fscycle=seq(70,300,1)
         tmpres=as.data.frame(cbind(1:nn,as.vector(coffebra.cont$country),as.vector(res.sub^2)))
         names(tmpres)=c("unit","country","res2")
         
-        # new: ordering one level (squared residuals)
-        otmpres=tmpres[order( tmpres$res2),]
+        # new: ordering two levels
+        otmpres=tmpres[order(tmpres$country, tmpres$res2),]
         
-        
-        
-        # we take the first m units 
+        # we take the first m/5 units for each country
         ordbsb=as.vector(otmpres$unit)
-
-        bsblast=ordbsb
-      
-  
+        ordind=c((1:(m/5))+0*grpunt, (1:(m/5))+1*grpunt, (1:(m/5))+2*grpunt, (1:(m/5))+3*grpunt, (1:(m/5))+4*grpunt)
+        # Then we take the smallest among countries in step m
+        
+        bsblast=ordbsb[ordind]
+        
+        # creo una tabella con valori 0/1 con testata F G I S K
+        #                                             0 1 0 0 1
+        # prendo il valore più piccolo fra le country non già prese!
+        
+        selind=c(((m/5))+0*grpunt, ((m/5))+1*grpunt, ((m/5))+2*grpunt, ((m/5))+3*grpunt, ((m/5))+4*grpunt)
         
         
-        nbsb=ordbsb[1:m]
+        # 1=F, 2=G, 3=I, 4=S, 5=UK
+        # mincountry=which.min(otmpres[selind,3]) # not needed?
+        
+        # == 15
+        idx=selind[which.min(otmpres[selind,3])]
+        idy=as.numeric(as.vector(otmpres[idx,1]))
+        
+        
+        # gives the unordered residuals on step m of all countries 
+        ordctry=as.numeric(as.vector(otmpres[selind,3]))
+        # gives the unordered IDEXES of residuals on step m of all countries 
+        ordctryind=as.numeric(as.vector(otmpres[selind,1]))
+        # gives the order of the residual that must be applied to INDEXES (ordctryind)
+        ordctryindex=order(as.vector(otmpres[selind,3]))
+        ordindx=ordctryind[ordctryindex]
+        mtchidx=match(otmpres[,1],ordindx)
+        
+        
+        
+        # select the 1st best, 2nd best, ..., 5th best inside inner cycle
+        for (cv_idx in 1:5)
+        {
+          id_ctry=which(match(tabcountry[1,],tmpres[ordindx[cv_idx],2])==1)
+          cat("m:", m, " incy:", incy, " id_ctry:", id_ctry,"\n")
+         # if(tabcountry[2,id_ctry]==0)
+          #{
+            tabcountry[2,id_ctry]=1
+            tabcountry[3,id_ctry]=ordindx[cv_idx]
+            id_best=ordindx[cv_idx]
+            break
+          #}
+        }
+        
+        
+        
+#         # external for index parse the candidate vector 
+#         for (cv_idx in 1:5){
+#           # internal for index parse TABLE [F G I S K] 2nd row
+#             for (tab_idx in 1:5){
+#             # if is not already taken ... set to 1
+#             if (tabcountry[1,tab_idx]==0){
+#               tabcountry[2,ordctry[ij]]=1
+#             }
+#             break
+#           }
+#         }
+        
+        # ordinerei con quelli di m (step5) + quelli aggiuntivi   
+        # calcolati in questi cicli interni
+        
+        stblockbsb=ordbsb[ordind]
+        
+        
+        nbsb=c(stblockbsb[1:(m-5+incy-1)], id_best)
         
         
         ttt = nbsb
@@ -256,7 +313,7 @@ fscycle=seq(70,300,1)
         row.inside.fwd[1:length(nbsb), step] = nbsb
         uhat.fwd[, step] = as.vector(uhat.sub)
 
-        #}  # innercycle 
+        }  # innercycle
     }
 }
 
@@ -280,7 +337,6 @@ plot(length(bsb):length(y), uhat.fwd[1,], type = "n", ylim = range(uhat.fwd, na.
 for (i in 1:nrow(uhat.fwd)) 
   lines(fscycle0, uhat.fwd[i, fscycle1], lty = i, col = i, lwd=2)
 abline(h = 0, lwd = 5, lty = 2, col = "blue")
-
 
 
 rrr=uhat.fwd %*% diag(1/as.vector(sqrt(sigma2U.fwd)))
