@@ -9,7 +9,7 @@ coffebra.cont <- coffebra
 # new: nn & grpunt
 nn=dim(coffebra.cont)[1]
 grpunt=12*5
-tabcountry=rbind(c("F", "G", "I", "S", "UK"), c(0,0,0,0,0), c(0,0,0,0,0) )
+tabcountry=rbind(c("F", "G", "I", "S", "UK"), c(0,0,0,0,0), c(0,0,0,0,0), c(0,0,0,0,0), c(0,0,0,0,0) )
 
 righe.cont <- 1:2
 f1 <- 0.35
@@ -135,12 +135,13 @@ uhat.fwd = matrix(NA, nrow=ngroups, ncol = length(y)-length(bsb)+ 1)
 ############################  START OF THE FS
 
 # new: seq code and for code
-fscycle=seq(70,300,5)
+fscycle=seq(70,300,1)
 
 # original:
+first=1
  for(m in fscycle) {
    
-   tabcountry[2:3,1:5]=0
+   # tabcountry[2:3,1:5]=0
   
     cat("Subset size m of the FWD = ", m, "\n")
     if (m == length(bsb)) { ### first step of the forward search
@@ -186,10 +187,10 @@ fscycle=seq(70,300,5)
         
 ########## create a inner cycle for 1 < m < 5        
         
-        for (incy in 1:5){
+ ##       for (incy in 1:5){
           step = step+1
           
-############################################################  ORDERING RESIDUALS        
+############################################################   ORDERING RESIDUALS        
         # new: ordering a data matrix with countries
         tmpres=as.data.frame(cbind(1:nn,as.vector(coffebra.cont$country),as.vector(res.sub^2)))
         names(tmpres)=c("unit","country","res2")
@@ -197,9 +198,44 @@ fscycle=seq(70,300,5)
         # new: ordering two levels
         otmpres=tmpres[order(tmpres$country, tmpres$res2),]
         
-        # we take the first m/5 units for each country
+        # we take the first k units for each country
+        # each country can have a different amount of assigned units
+        
         ordbsb=as.vector(otmpres$unit)
-        ordind=c((1:(m/5))+0*grpunt, (1:(m/5))+1*grpunt, (1:(m/5))+2*grpunt, (1:(m/5))+3*grpunt, (1:(m/5))+4*grpunt)
+        ## F G I S UK
+        
+        if (first==1)
+        {
+        #m1=floor(m/5)+1
+        m1=floor(m/5)
+        ordind=c((1:m1)+0*grpunt, (1:m1)+1*grpunt, (1:m1)+2*grpunt, (1:m1)+3*grpunt, (1:m1)+4*grpunt)
+        tabcountry[2,1:5]=m1
+        #tabcountry[2,2]=m1
+        #tabcountry[2,3]=m1
+        #tabcountry[2,4]=m1
+        #tabcountry[2,5]=m1
+        nc1=as.numeric(tabcountry[2,1])
+        nc2=as.numeric(tabcountry[2,2])
+        nc3=as.numeric(tabcountry[2,3])
+        nc4=as.numeric(tabcountry[2,4])
+        nc5=as.numeric(tabcountry[2,5])
+        ordind=c((1:nc1)+0*grpunt, (1:nc2)+1*grpunt, (1:nc3)+2*grpunt, (1:nc4)+3*grpunt, (1:nc5)+4*grpunt) 
+        
+        
+        }
+        else
+        {
+          nc1=as.numeric(tabcountry[2,1])
+          nc2=as.numeric(tabcountry[2,2])
+          nc3=as.numeric(tabcountry[2,3])
+          nc4=as.numeric(tabcountry[2,4])
+          nc5=as.numeric(tabcountry[2,5])
+          
+          ordind=c((1:nc1)+0*grpunt, (1:nc2)+1*grpunt, (1:nc3)+2*grpunt, (1:nc4)+3*grpunt, (1:nc5)+4*grpunt) 
+          
+          
+        }
+        
         # Then we take the smallest among countries in step m
         
         bsblast=ordbsb[ordind]
@@ -207,9 +243,12 @@ fscycle=seq(70,300,5)
         # creo una tabella con valori 0/1 con testata F G I S K
         #                                             0 1 0 0 1
         # prendo il valore più piccolo fra le country non già prese!
+
+        selind=c((nc1)+0*grpunt, (nc2)+1*grpunt, (nc3)+2*grpunt, (nc4)+3*grpunt, (nc5)+4*grpunt) 
         
-        selind=c(((m/5))+0*grpunt, ((m/5))+1*grpunt, ((m/5))+2*grpunt, ((m/5))+3*grpunt, ((m/5))+4*grpunt)
+      ##  selind=c(((m/5))+0*grpunt, ((m/5))+1*grpunt, ((m/5))+2*grpunt, ((m/5))+3*grpunt, ((m/5))+4*grpunt)
         
+        #selind=ordind
         
         # 1=F, 2=G, 3=I, 4=S, 5=UK
         # mincountry=which.min(otmpres[selind,3]) # not needed?
@@ -237,8 +276,9 @@ fscycle=seq(70,300,5)
           cat("m:", m, " incy:", incy, " id_ctry:", id_ctry,"\n")
          # if(tabcountry[2,id_ctry]==0)
           #{
-            tabcountry[2,id_ctry]=1
-            tabcountry[3,id_ctry]=ordindx[cv_idx]
+          tabcountry[2,id_ctry]=as.numeric(tabcountry[2,id_ctry])+1
+            tabcountry[4,id_ctry]=1
+            tabcountry[5,id_ctry]=ordindx[cv_idx]
             id_best=ordindx[cv_idx]
             break
           #}
@@ -264,7 +304,7 @@ fscycle=seq(70,300,5)
         stblockbsb=ordbsb[ordind]
         
         
-        nbsb=c(stblockbsb[1:(m-5+incy-1)], id_best)
+        nbsb=c(stblockbsb[1:(m-1)], id_best)
         
         
         ttt = nbsb
@@ -313,8 +353,9 @@ fscycle=seq(70,300,5)
         row.inside.fwd[1:length(nbsb), step] = nbsb
         uhat.fwd[, step] = as.vector(uhat.sub)
 
-        }  # innercycle
-    }
+        #}  # innercycle
+    first=0
+        }
 }
 
 fscycle0=70:300
