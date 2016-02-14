@@ -124,6 +124,7 @@ bsb = temp[which.min(apply(resorder, 2, median)), ]
 
 ### Storage of quantities
 res.fwd=matrix(NA, nrow = length(y), ncol = length(y)-length(bsb) + 1)
+units.in=matrix(0, nrow = length(y), ncol = length(y)-length(bsb) + 1)
 beta.fwd = matrix(NA, nrow = ncol(X), ncol = length(y)-length(bsb) + 1)
 ttest.fwd = beta.fwd
 sigma2U.fwd = matrix(NA, nrow = 1, ncol = length(y)-length(bsb)+ 1)
@@ -304,8 +305,9 @@ first=1
         stblockbsb=ordbsb[ordind]
         
         
-        nbsb=c(stblockbsb[1:(m-1)], id_best)
+        nbsb=as.numeric(c(stblockbsb[1:(m-1)], id_best))
         
+        units.in[nbsb, step] = 1
         
         ttt = nbsb
         
