@@ -273,7 +273,7 @@ first=1
         for (cv_idx in 1:5)
         {
           id_ctry=which(match(tabcountry[1,],tmpres[ordindx[cv_idx],2])==1)
-          cat("m:", m, " incy:", incy, " id_ctry:", id_ctry,"\n")
+          cat("m:", m, " id_ctry:", id_ctry,"\n")
          # if(tabcountry[2,id_ctry]==0)
           #{
           tabcountry[2,id_ctry]=as.numeric(tabcountry[2,id_ctry])+1
